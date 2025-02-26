@@ -1,0 +1,40 @@
+<!-- templates/edit.html -->
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Edit Task</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                Edit Task Details
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="task" class="form-label">Task Description</label>
+                        <textarea class="form-control" id="task" name="task" rows="3" required>{{ todo.task }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority" name="priority">
+                            <option value="High" {% if todo.priority == 'High' %}selected{% endif %}>High</option>
+                            <option value="Medium" {% if todo.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                            <option value="Low" {% if todo.priority == 'Low' %}selected{% endif %}>Low</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="deadline" class="form-label">Deadline</label>
+                        <input type="date" class="form-control" id="deadline" name="deadline" value="{{ todo.deadline }}">
+                    </div>
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <a href="/" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

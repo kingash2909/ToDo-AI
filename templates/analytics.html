@@ -1,0 +1,97 @@
+<!-- templates/analytics.html -->
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Task Analytics</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Overview
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <h3>{{ total }}</h3>
+                        <p class="text-muted">Total Tasks</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <h3>{{ completed }}</h3>
+                        <p class="text-muted">Completed</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <h3>{{ "%.1f"|format(completion_rate) }}%</h3>
+                        <p class="text-muted">Completion Rate</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <h3>{{ high_priority }}</h3>
+                        <p class="text-muted">High Priority</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                Priority Distribution
+            </div>
+            <div class="card-body">
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-danger" style="width: {{ high_priority / total * 100 if total > 0 else 0 }}%">
+                        High ({{ high_priority }})
+                    </div>
+                    <div class="progress-bar bg-warning" style="width: {{ (total - high_priority - completed) / total * 100 if total > 0 else 0 }}%">
+                        Medium/Low ({{ total - high_priority - completed }})
+                    </div>
+                    <div class="progress-bar bg-success" style="width: {{ completed / total * 100 if total > 0 else 0 }}%">
+                        Completed ({{ completed }})
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                AI Insights
+            </div>
+            <div class="card-body">
+                <p>Based on your task patterns, here are some AI-generated insights:</p>
+                <ul>
+                    <li>You tend to complete {{ "%.1f"|format(completion_rate) }}% of your tasks</li>
+                    <li>You currently have {{ high_priority }} high-priority tasks that need attention</li>
+                    <li>Consider reanalyzing older tasks to update their priority based on current context</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                Productivity Tips
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Focus on high-priority tasks first</li>
+                    <li class="list-group-item">Break complex tasks into smaller steps</li>
+                    <li class="list-group-item">Use the "Reanalyze" feature to update priorities</li>
+                    <li class="list-group-item">Review and plan tasks at the start of each day</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                Actions
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/" class="btn btn-outline-primary">Back to Tasks</a>
+                    <a href="/add" class="btn btn-outline-success">Add New Task</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

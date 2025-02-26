@@ -1,0 +1,41 @@
+<!-- templates/add.html -->
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Add New Task</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Task Details
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="task" class="form-label">Task Description</label>
+                        <textarea class="form-control" id="task" name="task" rows="3" required></textarea>
+                        <div class="form-text">Describe your task in detail for better AI suggestions</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Task with AI Suggestions</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                About AI Suggestions
+            </div>
+            <div class="card-body">
+                <p>Our AI will analyze your task and provide:</p>
+                <ul>
+                    <li>Suggested priority level based on task description</li>
+                    <li>A recommended deadline based on task complexity</li>
+                </ul>
+                <p>You can always edit these suggestions later if needed.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

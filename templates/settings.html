@@ -1,0 +1,399 @@
+<!-- templates/settings.html -->
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>App Settings</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="#general" class="list-group-item list-group-item-action active" data-bs-toggle="list">General</a>
+            <a href="#ai" class="list-group-item list-group-item-action" data-bs-toggle="list">AI Settings</a>
+            <a href="#appearance" class="list-group-item list-group-item-action" data-bs-toggle="list">Appearance</a>
+            <a href="#task" class="list-group-item list-group-item-action" data-bs-toggle="list">Task Options</a>
+            <a href="#notifications" class="list-group-item list-group-item-action" data-bs-toggle="list">Notifications</a>
+            <a href="#advanced" class="list-group-item list-group-item-action" data-bs-toggle="list">Advanced</a>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <form method="POST" action="/settings/save">
+            <div class="tab-content">
+                <!-- General Settings -->
+                <div class="tab-pane fade show active" id="general">
+                    <div class="card">
+                        <div class="card-header">General Settings</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="app_name" class="form-label">App Name</label>
+                                <input type="text" class="form-control" id="app_name" name="APP_NAME" value="{{ config.APP_NAME }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="storage_type" class="form-label">Storage Type</label>
+                                <select class="form-select" id="storage_type" name="STORAGE_TYPE">
+                                    <option value="json" {% if config.STORAGE_TYPE == 'json' %}selected{% endif %}>JSON File</option>
+                                    <option value="sqlite" {% if config.STORAGE_TYPE == 'sqlite' %}selected{% endif %}>SQLite Database</option>
+                                    <option value="mongodb" {% if config.STORAGE_TYPE == 'mongodb' %}selected{% endif %}>MongoDB</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="items_per_page" class="form-label">Items Per Page</label>
+                                <input type="number" class="form-control" id="items_per_page" name="ITEMS_PER_PAGE" value="{{ config.ITEMS_PER_PAGE }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Settings -->
+                <div class="tab-pane fade" id="ai">
+                    <div class="card">
+                        <div class="card-header">AI Configuration</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="ai_provider" class="form-label">AI Provider</label>
+                                <select class="form-select" id="ai_provider" name="AI_PROVIDER">
+                                    <option value="openai" {% if config.AI_PROVIDER == 'openai' %}selected{% endif %}>OpenAI</option>
+                                    <option value="anthropic" {% if config.AI_PROVIDER == 'anthropic' %}selected{% endif %}>Anthropic</option>
+                                    <option value="local" {% if config.AI_PROVIDER == 'local' %}selected{% endif %}>Local (Rule-based)</option>
+                                    <option value="none" {% if config.AI_PROVIDER == 'none' %}selected{% endif %}>None (Disable AI)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3 openai-settings" {% if config.AI_PROVIDER != 'openai' %}style="display: none;"{% endif %}>
+                                <label for="openai_api_key" class="form-label">OpenAI API Key</label>
+                                <input type="password" class="form-control" id="openai_api_key" name="OPENAI_API_KEY" value="{{ config.OPENAI_API_KEY }}">
+                            </div>
+                            
+                            <div class="mb-3 openai-settings" {% if config.AI_PROVIDER != 'openai' %}style="display: none;"{% endif %}>
+                                <label for="openai_model" class="form-label">OpenAI Model</label>
+                                <select class="form-select" id="openai_model" name="OPENAI_MODEL">
+                                    <option value="gpt-3.5-turbo" {% if config.OPENAI_MODEL == 'gpt-3.5-turbo' %}selected{% endif %}>GPT-3.5 Turbo</option>
+                                    <option value="gpt-4" {% if config.OPENAI_MODEL == 'gpt-4' %}selected{% endif %}>GPT-4</option>
+                                    <option value="gpt-4-turbo" {% if config.OPENAI_MODEL == 'gpt-4-turbo' %}selected{% endif %}>GPT-4 Turbo</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3 anthropic-settings" {% if config.AI_PROVIDER != 'anthropic' %}style="display: none;"{% endif %}>
+                                <label for="anthropic_api_key" class="form-label">Anthropic API Key</label>
+                                <input type="password" class="form-control" id="anthropic_api_key" name="ANTHROPIC_API_KEY" value="{{ config.ANTHROPIC_API_KEY }}">
+                            </div>
+                            
+                            <div class="mb-3 anthropic-settings" {% if config.AI_PROVIDER != 'anthropic' %}style="display: none;"{% endif %}>
+                                <label for="anthropic_model" class="form-label">Anthropic Model</label>
+                                <select class="form-select" id="anthropic_model" name="ANTHROPIC_MODEL">
+                                    <option value="claude-3-opus-20240229" {% if config.ANTHROPIC_MODEL == 'claude-3-opus-20240229' %}selected{% endif %}>Claude 3 Opus</option>
+                                    <option value="claude-3-sonnet-20240229" {% if config.ANTHROPIC_MODEL == 'claude-3-sonnet-20240229' %}selected{% endif %}>Claude 3 Sonnet</option>
+                                    <option value="claude-3-haiku-20240307" {% if config.ANTHROPIC_MODEL == 'claude-3-haiku-20240307' %}selected{% endif %}>Claude 3 Haiku</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_priority_suggestions" name="ENABLE_PRIORITY_SUGGESTIONS" {% if config.ENABLE_PRIORITY_SUGGESTIONS %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_priority_suggestions">Enable Priority Suggestions</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_deadline_suggestions" name="ENABLE_DEADLINE_SUGGESTIONS" {% if config.ENABLE_DEADLINE_SUGGESTIONS %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_deadline_suggestions">Enable Deadline Suggestions</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_task_categorization" name="ENABLE_TASK_CATEGORIZATION" {% if config.ENABLE_TASK_CATEGORIZATION %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_task_categorization">Enable Auto-Categorization</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_time_estimation" name="ENABLE_TIME_ESTIMATION" {% if config.ENABLE_TIME_ESTIMATION %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_time_estimation">Enable Time Estimation</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Appearance Settings -->
+                <div class="tab-pane fade" id="appearance">
+                    <div class="card">
+                        <div class="card-header">Appearance</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="theme" class="form-label">Theme</label>
+                                <select class="form-select" id="theme" name="THEME">
+                                    <option value="default" {% if config.THEME == 'default' %}selected{% endif %}>Default</option>
+                                    <option value="dark" {% if config.THEME == 'dark' %}selected{% endif %}>Dark</option>
+                                    <option value="light" {% if config.THEME == 'light' %}selected{% endif %}>Light</option>
+                                    <option value="colorful" {% if config.THEME == 'colorful' %}selected{% endif %}>Colorful</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="default_view" class="form-label">Default View</label>
+                                <select class="form-select" id="default_view" name="DEFAULT_VIEW">
+                                    <option value="list" {% if config.DEFAULT_VIEW == 'list' %}selected{% endif %}>List View</option>
+                                    <option value="kanban" {% if config.DEFAULT_VIEW == 'kanban' %}selected{% endif %}>Kanban Board</option>
+                                    <option value="calendar" {% if config.DEFAULT_VIEW == 'calendar' %}selected{% endif %}>Calendar View</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="show_analytics_summary" name="SHOW_ANALYTICS_SUMMARY" {% if config.SHOW_ANALYTICS_SUMMARY %}checked{% endif %}>
+                                    <label class="form-check-label" for="show_analytics_summary">Show Analytics Summary</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Priority Colors</label>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label for="high_priority_color" class="form-label">High Priority</label>
+                                        <input type="color" class="form-control form-control-color" id="high_priority_color" name="PRIORITY_COLORS_HIGH" value="{{ config.PRIORITY_COLORS.High }}">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="medium_priority_color" class="form-label">Medium Priority</label>
+                                        <input type="color" class="form-control form-control-color" id="medium_priority_color" name="PRIORITY_COLORS_MEDIUM" value="{{ config.PRIORITY_COLORS.Medium }}">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label for="low_priority_color" class="form-label">Low Priority</label>
+                                        <input type="color" class="form-control form-control-color" id="low_priority_color" name="PRIORITY_COLORS_LOW" value="{{ config.PRIORITY_COLORS.Low }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Task Options -->
+                <div class="tab-pane fade" id="task">
+                    <div class="card">
+                        <div class="card-header">Task Options</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="default_priority" class="form-label">Default Priority</label>
+                                <select class="form-select" id="default_priority" name="DEFAULT_PRIORITY">
+                                    {% for priority in config.PRIORITY_LEVELS %}
+                                    <option value="{{ priority }}" {% if config.DEFAULT_PRIORITY == priority %}selected{% endif %}>{{ priority }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_custom_priority_levels" name="ENABLE_CUSTOM_PRIORITY_LEVELS" {% if config.ENABLE_CUSTOM_PRIORITY_LEVELS %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_custom_priority_levels">Enable Custom Priority Levels</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3 custom-priority-options" {% if not config.ENABLE_CUSTOM_PRIORITY_LEVELS %}style="display: none;"{% endif %}>
+                                <label for="priority_levels" class="form-label">Priority Levels (comma-separated)</label>
+                                <input type="text" class="form-control" id="priority_levels" name="PRIORITY_LEVELS" value="{{ config.PRIORITY_LEVELS|join(',') }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_categories" name="ENABLE_CATEGORIES" {% if config.ENABLE_CATEGORIES %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_categories">Enable Categories</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3 category-options" {% if not config.ENABLE_CATEGORIES %}style="display: none;"{% endif %}>
+                                <label for="categories" class="form-label">Categories (comma-separated)</label>
+                                <input type="text" class="form-control" id="categories" name="CATEGORIES" value="{{ config.CATEGORIES|join(',') }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_tags" name="ENABLE_TAGS" {% if config.ENABLE_TAGS %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_tags">Enable Tags</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_attachments" name="ENABLE_ATTACHMENTS" {% if config.ENABLE_ATTACHMENTS %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_attachments">Enable Attachments</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notifications -->
+                <div class="tab-pane fade" id="notifications">
+                    <div class="card">
+                        <div class="card-header">Notification Settings</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_notifications" name="ENABLE_NOTIFICATIONS" {% if config.ENABLE_NOTIFICATIONS %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_notifications">Enable Notifications</label>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-options" {% if not config.ENABLE_NOTIFICATIONS %}style="display: none;"{% endif %}>
+                                <div class="mb-3">
+                                    <label for="notification_method" class="form-label">Notification Method</label>
+                                    <select class="form-select" id="notification_method" name="NOTIFICATION_METHOD">
+                                        <option value="web" {% if config.NOTIFICATION_METHOD == 'web' %}selected{% endif %}>Web Browser</option>
+                                        <option value="email" {% if config.NOTIFICATION_METHOD == 'email' %}selected{% endif %}>Email</option>
+                                        <option value="both" {% if config.NOTIFICATION_METHOD == 'both' %}selected{% endif %}>Both</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email_reminder_time" class="form-label">Send Email Reminders (hours before deadline)</label>
+                                    <input type="number" class="form-control" id="email_reminder_time" name="EMAIL_REMINDER_TIME" value="{{ config.EMAIL_REMINDER_TIME }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Settings -->
+                <div class="tab-pane fade" id="advanced">
+                    <div class="card">
+                        <div class="card-header">Advanced Settings</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="date_format" class="form-label">Date Format</label>
+                                <input type="text" class="form-control" id="date_format" name="DATE_FORMAT" value="{{ config.DATE_FORMAT }}">
+                                <div class="form-text">Format codes: %Y (year), %m (month), %d (day)</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="time_format" class="form-label">Time Format</label>
+                                <input type="text" class="form-control" id="time_format" name="TIME_FORMAT" value="{{ config.TIME_FORMAT }}">
+                                <div class="form-text">Format codes: %H (24h), %I (12h), %M (minute), %S (second), %p (AM/PM)</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="timezone" class="form-label">Timezone</label>
+                                <select class="form-select" id="timezone" name="TIMEZONE">
+                                    <option value="UTC" {% if config.TIMEZONE == 'UTC' %}selected{% endif %}>UTC</option>
+                                    <option value="America/New_York" {% if config.TIMEZONE == 'America/New_York' %}selected{% endif %}>Eastern Time (US & Canada)</option>
+                                    <option value="America/Chicago" {% if config.TIMEZONE == 'America/Chicago' %}selected{% endif %}>Central Time (US & Canada)</option>
+                                    <option value="America/Denver" {% if config.TIMEZONE == 'America/Denver' %}selected{% endif %}>Mountain Time (US & Canada)</option>
+                                    <option value="America/Los_Angeles" {% if config.TIMEZONE == 'America/Los_Angeles' %}selected{% endif %}>Pacific Time (US & Canada)</option>
+                                    <option value="Europe/London" {% if config.TIMEZONE == 'Europe/London' %}selected{% endif %}>London</option>
+                                    <option value="Europe/Paris" {% if config.TIMEZONE == 'Europe/Paris' %}selected{% endif %}>Paris</option>
+                                    <option value="Asia/Tokyo" {% if config.TIMEZONE == 'Asia/Tokyo' %}selected{% endif %}>Tokyo</option>
+                                    <option value="Australia/Sydney" {% if config.TIMEZONE == 'Australia/Sydney' %}selected{% endif %}>Sydney</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="debug_mode" name="DEBUG" {% if config.DEBUG %}checked{% endif %}>
+                                    <label class="form-check-label" for="debug_mode">Debug Mode</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-danger" id="reset-settings">Reset to Defaults</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+                <a href="/" class="btn btn-secondary ms-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle settings sections based on selections
+        document.getElementById('ai_provider').addEventListener('change', function() {
+            const provider = this.value;
+            document.querySelectorAll('.openai-settings').forEach(el => {
+                el.style.display = provider === 'openai' ? 'block' : 'none';
+            });
+            document.querySelectorAll('.anthropic-settings').forEach(el => {
+                el.style.display = provider === 'anthropic' ? 'block' : 'none';
+            });
+        });
+        
+        document.getElementById('enable_custom_priority_levels').addEventListener('change', function() {
+            document.querySelector('.custom-priority-options').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('enable_categories').addEventListener('change', function() {
+            document.querySelector('.category-options').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('enable_notifications').addEventListener('change', function() {
+            document.querySelector('.notification-options').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Confirmation for reset settings
+        document.getElementById('reset-settings').addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset all settings to default values? This cannot be undone.')) {
+                window.location.href = '/settings/reset';
+            }
+        });
+        
+        // Initialize Bootstrap tabs
+        const triggerTabList = [].slice.call(document.querySelectorAll('.list-group-item'))
+        triggerTabList.forEach(function (triggerEl) {
+            const tabTrigger = new bootstrap.Tab(triggerEl)
+            
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault()
+                tabTrigger.show()
+            })
+        });
+        
+        // Form validation before submit
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Validate app name
+            const appName = document.getElementById('app_name').value;
+            if (!appName || appName.trim() === '') {
+                alert('App Name is required');
+                isValid = false;
+            }
+            
+            // Validate items per page
+            const itemsPerPage = document.getElementById('items_per_page').value;
+            if (itemsPerPage < 1 || itemsPerPage > 100) {
+                alert('Items Per Page must be between 1 and 100');
+                isValid = false;
+            }
+            
+            // Validate API keys if AI providers are enabled
+            const aiProvider = document.getElementById('ai_provider').value;
+            if (aiProvider === 'openai') {
+                const openaiKey = document.getElementById('openai_api_key').value;
+                if (!openaiKey || openaiKey.trim() === '') {
+                    alert('OpenAI API Key is required when using OpenAI provider');
+                    isValid = false;
+                }
+            } else if (aiProvider === 'anthropic') {
+                const anthropicKey = document.getElementById('anthropic_api_key').value;
+                if (!anthropicKey || anthropicKey.trim() === '') {
+                    alert('Anthropic API Key is required when using Anthropic provider');
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}
