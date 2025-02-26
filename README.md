@@ -2,6 +2,12 @@
 
 A simple and efficient Todo List web application built with Flask. This application helps users manage their daily tasks with features like adding, editing, and tracking todo items.
 
+
+https://github.com/user-attachments/assets/cca8bbbf-19b2-4615-a634-a4687e9f597e
+
+
+
+
 ## Features
 
 - Create new todo items
